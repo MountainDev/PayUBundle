@@ -1,0 +1,27 @@
+services:
+    radnok.payu.payment_manager:
+        class: RadnoK\PayUBundle\Manager\PaymentManager
+        arguments:
+            - "@radnok.payu.single_payment"
+            - "@radnok.payu.recurring_payment"
+
+    radnok.payu.recurring_payment:
+        class: RadnoK\PayUBundle\Payment\RecurringPayment
+        arguments:
+            - "@router"
+
+    radnok.payu.single_payment:
+        class: RadnoK\PayUBundle\Payment\SinglePayment
+        arguments:
+            - "@router"
+
+    radnok.payu.listener:
+        class: RadnoK\PayUBundle\EventListener\PaymentListener
+        arguments:
+            - "@radnok.payu.payment_manager"
+            - "@doctrine.orm.entity_manager"
+            - "%payu_environment%"
+            - "%payu_client_id%"
+            - "%payu_client_secret%"
+        tags:
+            - { name: kernel.event_subscriber }
