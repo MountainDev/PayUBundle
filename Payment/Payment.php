@@ -10,7 +10,10 @@ use OpenPayU_Configuration;
 
 abstract class Payment
 {
-    use EntityManagerAwareTrait, RouterAwareTrait;
+    /**
+     * @var Router
+     */
+    private $router;
 
     /**
      * @var PaymentManager

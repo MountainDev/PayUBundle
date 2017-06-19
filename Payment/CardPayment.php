@@ -2,18 +2,29 @@
 
 namespace RadnoK\PayUBundle\Payment;
 
-use RadnoK\PayUBundle\Entity\Order;
-use RadnoK\PayUBundle\Entity\Subscription;
-use OpenPayU_Order;
 use OpenPayU_Configuration;
+use RadnoK\PayUBundle\Model\OrderInterface;
+use RadnoK\PayUBundle\Model\SubscriberInterface;
+use RadnoK\PayUBundle\Model\SubscriptionInterface;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class CardPayment
 {
     /**
-     * @param Subscription $subscription
-     * @return Order
+     * @var Router
      */
-    private function createOrderForSubscription(Subscription $subscription)
+    private $router;
+
+    public function __construct(Router $router)
+    {
+        $this->router = $router;
+    }
+
+    /**
+     * @param SubscriptionInterface $subscription
+     * @return OrderInterface
+     */
+    private function createOrderForSubscription(SubscriptionInterface $subscription)
     {
         $order = new Order();
         $order->setSubscriber($subscription->getSubscriber());
@@ -26,12 +37,15 @@ class CardPayment
     }
 
     /**
-     * @param Order $order
+     * @param OrderInterface $order
      * @param $token
      * @return array
      */
-    private function buildRequestData(Order $order, $token)
+    private function buildRequestData(OrderInterface $order, $token)
     {
+        /** @var SubscriberInterface $subscriber */
+        $subscriber = $order->getSubscriber();
+
         return [
             'notifyUrl'     => $this->router->generate('radnok_payu_payments_notify'),
             'recurring'     => 'STANDARD',
@@ -48,11 +62,11 @@ class CardPayment
                 ]
             ],
             'buyer'         => [
-                'extCustomerId' => $order->getSubscriber()->getId(),
-                'email'         => $order->getSubscriber()->getEmail(),
-                'phone'         => $order->getSubscriber()->getPhoneNumber(),
-                'firstName'     => $order->getSubscriber()->getFirstName(),
-                'lastName'      => $order->getSubscriber()->getLastName(),
+                'extCustomerId' => $subscriber->getId(),
+                'email'         => $subscriber->getEmail(),
+                'phone'         => $subscriber->getPhoneNumber(),
+                'firstName'     => $subscriber->getFirstName(),
+                'lastName'      => $subscriber->getLastName(),
             ],
             'payMethods'    => [
                 'payMethod' => [

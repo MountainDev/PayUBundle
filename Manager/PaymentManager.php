@@ -2,17 +2,9 @@
 
 namespace RadnoK\PayUBundle\Manager;
 
-use Doctrine\ORM\EntityManager;
-use RadnoK\CommonBundle\Traits\EntityManagerAwareTrait;
-use RadnoK\CommonBundle\Traits\RouterAwareTrait;
-use RadnoK\PayUBundle\Entity\Order;
-use RadnoK\PayUBundle\Entity\PlanInterface;
-use RadnoK\PayUBundle\Entity\SubscriberInterface;
-use RadnoK\PayUBundle\Entity\Subscription;
+use RadnoK\PayUBundle\Model\OrderInterface;
 use RadnoK\PayUBundle\Payment\RecurringPayment;
 use RadnoK\PayUBundle\Payment\SinglePayment;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PaymentManager
 {
@@ -34,12 +26,12 @@ class PaymentManager
         $this->recurringPayment = $recurringPayment;
     }
 
-    public function singleOrderData(Order $order, string $target, string $notify)
+    public function singleOrderData(OrderInterface $order, string $target, string $notify)
     {
         return $this->singlePayment->getOrderData($order, $target, $notify);
     }
 
-    public function recurringOrderData(Order $order, string $token, string $notify)
+    public function recurringOrderData(OrderInterface $order, string $token, string $notify)
     {
         return $this->recurringPayment->getOrderData($order, $token, $notify);
     }

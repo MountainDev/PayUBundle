@@ -22,10 +22,26 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('plan_class')->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('order_class')->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('subscriber_class')->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('subscription_class')->isRequired()->cannotBeEmpty()->end()
+                ->arrayNode('payu_account')
+                    ->children()
+                        ->scalarNode('environment')->isRequired()->cannotBeEmpty()->end()
+                        ->scalarNode('client_id')->isRequired()->cannotBeEmpty()->end()
+                        ->scalarNode('client_secret')->isRequired()->cannotBeEmpty()->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+
+        $rootNode
+            ->children()
+                ->arrayNode('doctrine')
+                    ->children()
+                        ->scalarNode('plan_class')->isRequired()->cannotBeEmpty()->end()
+                        ->scalarNode('order_class')->isRequired()->cannotBeEmpty()->end()
+                        ->scalarNode('subscriber_class')->isRequired()->cannotBeEmpty()->end()
+                        ->scalarNode('subscription_class')->isRequired()->cannotBeEmpty()->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 

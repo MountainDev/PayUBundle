@@ -6,19 +6,23 @@ use AppBundle\Entity\User;
 use RadnoK\CommonBundle\Traits\RouterAwareTrait;
 use RadnoK\PayUBundle\Entity\Order;
 use OpenPayU_Configuration;
+use RadnoK\PayUBundle\Model\OrderInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SinglePayment
 {
-    use RouterAwareTrait;
+    /**
+     * @var Router
+     */
+    private $router;
 
     public function __construct(Router $router)
     {
         $this->router = $router;
     }
 
-    public function getOrderData(Order $order, $target, $notify)
+    public function getOrderData(OrderInterface $order, $target, $notify)
     {
         $targetRoute = $this->router->generate($target, [], UrlGeneratorInterface::ABSOLUTE_URL);
         $notifyRoute = $this->router->generate($notify, [], UrlGeneratorInterface::ABSOLUTE_URL);

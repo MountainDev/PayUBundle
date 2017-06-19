@@ -4,9 +4,11 @@
  * Date: 18.06.2017
  */
 
-namespace RadnoK\PayUBundle\Entity;
+namespace RadnoK\PayUBundle\Model;
 
 abstract class Subscriber implements SubscriberInterface
 {
+    protected $id;
+
 
 }

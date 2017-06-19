@@ -23,7 +23,12 @@ use OpenPayU_Order;
 
 class PaymentListener implements EventSubscriberInterface
 {
-    use PaymentManagerAwareTrait, EntityManagerAwareTrait;
+    use PaymentManagerAwareTrait;
+
+    /**
+     * @var EntityManager
+     */
+    protected $entityManager;
 
     public function __construct(
         PaymentManager $paymentManager,
@@ -74,7 +79,9 @@ class PaymentListener implements EventSubscriberInterface
         $response = $request->getResponse();
 
         $order->setOrderId($response->orderId);
-        $this->entityPersistAndFlush($order);
+
+        $this->entityManager->persist($order);
+        $this->entityManager->flush();
 
         $event->setResponse($response->redirectUri);
     }
@@ -146,10 +153,12 @@ class PaymentListener implements EventSubscriberInterface
             $response = $request->getResponse();
 
             $order->setOrderId($response->orderId);
-            $this->entityPersistAndFlush($order);
+            $this->entityManager->persist($order);
+            $this->entityManager->flush();
 
             $subscription->setLastPaymentAttempt(new \DateTime());
-            $this->entityPersistAndFlush($subscription);
+            $this->entityManager->persist($subscription);
+            $this->entityManager->flush();
         }
     }
 

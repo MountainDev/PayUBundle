@@ -10,7 +10,7 @@ final class PlanType extends AbstractEnumType
     const RECURRING = 'recurring';
 
     protected static $choices = [
-        self::SINGLE    => 'Jednorazowa',
-        self::RECURRING => 'Cykliczna',
+        self::SINGLE    => 'radnok.payments.types.single',
+        self::RECURRING => 'radnok.payments.types.recurring',
     ];
 }

@@ -10,5 +10,5 @@ interface PaymentInterface
      * @param Request $request
      * @return mixed
      */
-    public function process(Request $request);
+    public function getOrderData();
 }

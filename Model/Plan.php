@@ -1,21 +1,16 @@
 <?php
 
-namespace RadnoK\PayUBundle\Entity;
+namespace RadnoK\PayUBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Fresh\DoctrineEnumBundle\Validator\Constraints as DoctrineAssert;
 
 /**
+ * @ORM\Entity()
  * @ORM\Table(name="payu_plan")
- * @ORM\Entity(repositoryClass="RadnoK\PayUBundle\Repository\PlanRepository")
  */
 abstract class Plan implements PlanInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
     protected $id;
 
     /**
@@ -55,14 +50,9 @@ abstract class Plan implements PlanInterface
     protected $type;
 
     /**
-     * @ORM\OneToMany(targetEntity="RadnoK\PayUBundle\Entity\Subscription", mappedBy="plan")
+     * @ORM\OneToMany(targetEntity="RadnoK\PayUBundle\Model\SubscriptionInterface", mappedBy="plan")
      */
     protected $subscriptions;
-
-    /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Company", mappedBy="choice")
-     */
-    protected $companies;
 
     public function getId(): int
     {

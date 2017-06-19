@@ -2,22 +2,19 @@
 
 namespace RadnoK\PayUBundle\Payment;
 
-use AppBundle\Entity\User;
-use RadnoK\CommonBundle\Traits\RouterAwareTrait;
-use RadnoK\PayUBundle\Entity\Order;
-use RadnoK\PayUBundle\Entity\Subscriber;
-use RadnoK\PayUBundle\Entity\SubscriberInterface;
-use RadnoK\PayUBundle\Entity\Subscription;
-use RadnoK\PayUBundle\Manager\PaymentManager;
-use OpenPayU_Order;
 use OpenPayU_Configuration;
+use RadnoK\PayUBundle\Model\OrderInterface;
+use RadnoK\PayUBundle\Model\SubscriberInterface;
+use RadnoK\PayUBundle\Model\SubscriptionInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class RecurringPayment
 {
-    use RouterAwareTrait;
+    /**
+     * @var Router
+     */
+    private $router;
 
     public function __construct(Router $router)
     {
@@ -27,12 +24,12 @@ class RecurringPayment
     /**
      * Get all order data
      *
-     * @param Order $order
-     * @param Subscription $subscription
+     * @param OrderInterface $order
+     * @param SubscriptionInterface $subscription
      * @param string $token
      * @return array
      */
-    public function getOrderData(Order $order, $token, $notify): array
+    public function getOrderData(OrderInterface $order, $token, $notify): array
     {
         $notifyRoute = $this->router->generate($notify, [], UrlGeneratorInterface::ABSOLUTE_URL);
 

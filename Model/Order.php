@@ -1,24 +1,16 @@
 <?php
 
-namespace RadnoK\PayUBundle\Entity;
+namespace RadnoK\PayUBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
-use FOS\UserBundle\Model\UserInterface;
-use RadnoK\CommonBundle\Traits\CreatableAwareTrait;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
+ * @ORM\Entity()
  * @ORM\Table(name="payu_order")
- * @ORM\Entity(repositoryClass="RadnoK\PayUBundle\Repository\OrderRepository")
  */
 abstract class Order implements OrderInterface
 {
-    use CreatableAwareTrait;
-
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
     protected $id;
 
     /**
@@ -53,7 +45,13 @@ abstract class Order implements OrderInterface
     protected $fromSubscription = false;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="orders")
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    protected $createdAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="RadnoK\PayUBundle\Model\SubscriberInterface", inversedBy="orders")
      */
     protected $subscriber;
 
@@ -102,6 +100,18 @@ abstract class Order implements OrderInterface
         $this->isPaid = $isPaid;
     }
 
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
     public function getFromSubscription(): bool
     {
         return $this->fromSubscription;
@@ -121,4 +131,5 @@ abstract class Order implements OrderInterface
     {
         $this->subscriber = $subscriber;
     }
+
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace RadnoK\PayUBundle\Entity;
+namespace RadnoK\PayUBundle\Model;
 
 interface SubscriptionInterface
 {

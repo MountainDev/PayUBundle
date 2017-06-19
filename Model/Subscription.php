@@ -1,23 +1,16 @@
 <?php
 
-namespace RadnoK\PayUBundle\Entity;
+namespace RadnoK\PayUBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
-use RadnoK\CommonBundle\Traits\CreatableAwareTrait;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
+ * @ORM\Entity()
  * @ORM\Table(name="payu_subscription")
- * @ORM\Entity(repositoryClass="RadnoK\PayUBundle\Repository\SubscriptionRepository")
  */
-abstract class Subscription
+abstract class Subscription implements SubscriptionInterface
 {
-    use CreatableAwareTrait;
-
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
     protected $id;
 
     /**
@@ -38,15 +31,21 @@ abstract class Subscription
     /**
      * @ORM\Column(name="last_payment_success", type="datetime", nullable=true)
      */
-    protected $lastPaymentSuccess;
+    protected $lastPaymentSuccess = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity="RadnoK\PayUBundle\Entity\Plan", inversedBy="subscriptions")
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="RadnoK\PayUBundle\Model\PlanInterface", inversedBy="subscriptions")
      */
     protected $plan;
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\User", inversedBy="subscription")
+     * @ORM\OneToOne(targetEntity="RadnoK\PayUBundle\Model\SubscriberInterface", inversedBy="subscription")
      * @ORM\JoinColumn(name="subscriber_id", referencedColumnName="id")
      */
     protected $subscriber;
@@ -107,6 +106,18 @@ abstract class Subscription
         return $this;
     }
 
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
     public function getPlan()
     {
         return $this->plan;
@@ -124,7 +135,7 @@ abstract class Subscription
         return $this->subscriber;
     }
 
-    public function setSubscriber($subscriber)
+    public function setSubscriber(SubscriberInterface $subscriber)
     {
         $this->subscriber = $subscriber;
      
