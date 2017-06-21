@@ -1,0 +1,5 @@
+radnok:
+    payments:
+        types:
+            recurring: Cykliczna
+            single: Jednorazowa

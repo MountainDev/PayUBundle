@@ -1,0 +1,47 @@
+services:
+    radnok_payu.payment_factory:
+        class: RadnoK\PayUBundle\Payment\PaymentFactory
+        arguments:
+            - "%payu_environment%"
+            - "%payu_client_id%"
+            - "%payu_client_secret%"
+
+    radnok_payu.listener:
+        class: RadnoK\PayUBundle\EventListener\PaymentListener
+        arguments:
+            - "@radnok_payu.util.subscription_manipulator"
+            - "@radnok_payu.util.order_manipulator"
+            - "@radnok_payu.payment_factory"
+            - "@router"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    radnok_payu.plan.form.type:
+        class: RadnoK\PayUBundle\Form\PlanType
+        tags:
+            - { name: form.type }
+        arguments: ["%radnok_model_plan_class%"]
+
+    radnok_payu.order_manager:
+        class: RadnoK\PayUBundle\Doctrine\OrderManager
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "%radnok_model_order_class%"
+
+    radnok_payu.subscription_manager:
+        class: RadnoK\PayUBundle\Doctrine\SubscriptionManager
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "%radnok_model_subscription_class%"
+
+    radnok_payu.util.order_manipulator:
+        class: RadnoK\PayUBundle\Util\OrderManipulator
+        arguments:
+            - "@radnok_payu.order_manager"
+            - "@event_dispatcher"
+
+    radnok_payu.util.subscription_manipulator:
+        class: RadnoK\PayUBundle\Util\SubscriptionManipulator
+        arguments:
+            - "@radnok_payu.subscription_manager"
+            - "@event_dispatcher"

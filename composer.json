@@ -1,0 +1,17 @@
+{
+    "name": "radnok/payubundle",
+    "description": "PayU system integration for Symfony 3",
+    "type": "library",
+    "require": {
+        "fresh/doctrine-enum-bundle": "^5.0",
+        "openpayu/openpayu": "^2.2",
+        "gedmo/doctrine-extensions": "^2.4"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Konrad Alfaro",
+            "email": "alfaro.konrad@gmail.com"
+        }
+    ]
+}

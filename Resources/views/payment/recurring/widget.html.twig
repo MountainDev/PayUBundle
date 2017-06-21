@@ -1,0 +1,16 @@
+<div id="payu-widget"></div>
+<script
+    src="https://secure.payu.com/front/widget/js/payu-bootstrap.js"
+    merchant-pos-id="{{ params['merchant-pos-id'] }}"
+    shop-name="{{ params['shop-name'] }}"
+    total-amount="{{ params['total-amount'] }}"
+    currency-code="{{ params['currency-code'] }}"
+    customer-language="{{ params['customer-language'] }}"
+    store-card="{{ params['store-card'] }}"
+    payu-brand="{{ params['payu-brand'] }}"
+    success-callback="success_action"
+    widget-mode="{{ params['widget-mode'] }}"
+    customer-email="{{ params['customer-email'] }}"
+    sig="{{ sig }}">
+</script>
+<input type="hidden" name="token" id="token" value="">
