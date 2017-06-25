@@ -13,4 +13,8 @@ interface SubscriberInterface
     public function getFirstName();
 
     public function getLastName();
+
+    public function getSubscription(): ?SubscriptionInterface;
+
+    public function setSubscription(SubscriptionInterface $subscription);
 }

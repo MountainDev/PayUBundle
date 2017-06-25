@@ -42,14 +42,9 @@ abstract class Subscriber implements SubscriberInterface
     protected $address;
 
     /**
-     * @ORM\OneToMany(targetEntity="RadnoK\PayUBundle\Model\SubscriptionInterface", mappedBy="subscriber")
+     * @ORM\OneToOne(targetEntity="RadnoK\PayUBundle\Model\SubscriptionInterface", mappedBy="subscriber")
      */
-    protected $subscriptions;
-
-    public function __construct()
-    {
-        $this->subscriptions = new ArrayCollection();
-    }
+    protected $subscription;
 
     public function getId()
     {
@@ -116,14 +111,14 @@ abstract class Subscriber implements SubscriberInterface
         return $this;
     }
 
-    public function getSubscriptions()
+    public function getSubscriptions(): ?SubscriptionInterface
     {
-        return $this->subscriptions;
+        return $this->subscription;
     }
 
-    public function setSubscriptions($subscriptions): self
+    public function setSubscription(SubscriptionInterface $subscriptions): self
     {
-        $this->subscriptions = $subscriptions;
+        $this->subscription = $subscriptions;
 
         return $this;
     }

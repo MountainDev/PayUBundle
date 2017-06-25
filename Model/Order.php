@@ -4,6 +4,7 @@ namespace RadnoK\PayUBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Fresh\DoctrineEnumBundle\Validator\Constraints as DoctrineAssert;
 
 /**
  * @ORM\Entity()
@@ -35,9 +36,10 @@ abstract class Order implements OrderInterface
     protected $description;
 
     /**
-     * @ORM\Column(name="is_paid", type="boolean")
+     * @ORM\Column(name="status", type="OrderStatusType", nullable=false)
+     * @DoctrineAssert\Enum(entity="RadnoK\PayUBundle\DBAL\Types\OrderStatusType")
      */
-    protected $isPaid = false;
+    protected $status;
 
     /**
      * @ORM\Column(name="from_subscription", type="boolean")
@@ -49,6 +51,12 @@ abstract class Order implements OrderInterface
      * @ORM\Column(name="created_at", type="datetime")
      */
     protected $createdAt;
+
+    /**
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(name="updated_at", type="datetime")
+     */
+    protected $updatedAt;
 
     /**
      * @ORM\ManyToOne(targetEntity="RadnoK\PayUBundle\Model\SubscriberInterface", inversedBy="orders")
@@ -90,14 +98,16 @@ abstract class Order implements OrderInterface
         $this->description = $description;
     }
 
-    public function getIsPaid(): bool
+    public function getStatus()
     {
-        return $this->isPaid;
+        return $this->status;
     }
 
-    public function setIsPaid(bool $isPaid)
+    public function setStatus(string $status): self
     {
-        $this->isPaid = $isPaid;
+        $this->status = $status;
+
+        return $this;
     }
 
     public function getCreatedAt(): \DateTime
@@ -105,11 +115,9 @@ abstract class Order implements OrderInterface
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): self
+    public function getUpdatedAt()
     {
-        $this->createdAt = $createdAt;
-
-        return $this;
+        return $this->updatedAt;
     }
 
     public function getFromSubscription(): bool

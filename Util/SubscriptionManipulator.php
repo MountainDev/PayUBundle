@@ -36,4 +36,9 @@ class SubscriptionManipulator
 
         return $subscription;
     }
+
+    public function update(SubscriptionInterface $subscription)
+    {
+        $this->subscriptionManager->update($subscription);
+    }
 }

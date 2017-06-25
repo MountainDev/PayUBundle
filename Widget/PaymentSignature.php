@@ -1,6 +1,6 @@
 <?php
 
-namespace RadnoK\PayUBundle\Util;
+namespace RadnoK\PayUBundle\Widget;
 
 use Psr\Log\InvalidArgumentException;
 
@@ -19,8 +19,7 @@ final class PaymentSignature
         'customer-language',
         'customer-email',
         'store-card',
-        'payu-brand',
-        'widget-mode',
+        'recurring-payment',
     ];
 
     /**

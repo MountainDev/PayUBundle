@@ -14,6 +14,16 @@ interface SubscriptionInterface
 
     public function setLastPaymentAttempt(\DateTime $dateTime);
 
+    public function getLastPaymentSuccess();
+
+    public function setLastPaymentSuccess(\DateTime $dateTime);
+
+    public function getChargesFailed();
+
+    public function addChargesFailed();
+
+    public function setChargesFailed(int $number);
+
     public function getPlan(): PlanInterface;
 
     public function setPlan(PlanInterface $plan);
@@ -21,5 +31,4 @@ interface SubscriptionInterface
     public function getSubscriber(): SubscriberInterface;
 
     public function setSubscriber(SubscriberInterface $subscriber);
-
 }

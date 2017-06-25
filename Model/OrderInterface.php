@@ -22,9 +22,9 @@ interface OrderInterface
 
     public function setDescription(string $description);
 
-    public function getIsPaid(): bool;
+    public function getStatus();
 
-    public function setIsPaid(bool $isPaid);
+    public function setStatus(string $status);
 
     public function getFromSubscription(): bool;
 

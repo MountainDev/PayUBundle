@@ -10,4 +10,9 @@ final class RadnoKPayUEvents
 
     const CHARGE_CARDS = 'radnok.payu.charge.cards';
 
+    const PAYMENT_COMPLETED = 'radnok.payu.payment.status.completed';
+
+    const PAYMENT_PENDING = 'radnok.payu.payment.status.pending';
+
+    const PAYMENT_CANCELED = 'radnok.payu.payment.status.canceled';
 }

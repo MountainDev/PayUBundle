@@ -8,20 +8,14 @@ use RadnoK\PayUBundle\Model\SubscriberInterface;
 
 final class SinglePayment
 {
-    /**
-     * @param OrderInterface $order
-     * @param $target
-     * @param $notify
-     * @return array
-     */
-    public function getOrderData(OrderInterface $order, $target, $notify): array
+    public function getOrderData(OrderInterface $order, string $targetUrl, string $notifyUrl): array
     {
         /** @var SubscriberInterface $subscriber */
         $subscriber = $order->getSubscriber();
 
         return [
-            'continueUrl'   => $target,
-            'notifyUrl'     => $notify,
+            'continueUrl'   => $targetUrl,
+            'notifyUrl'     => $notifyUrl,
             'customerIp'    => '127.0.0.1',
             'merchantPosId' => OpenPayU_Configuration::getOauthClientId(),
             'description'   => $order->getDescription(),

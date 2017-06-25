@@ -8,7 +8,7 @@ namespace RadnoK\PayUBundle\Payment;
 
 use OpenPayU_Configuration;
 use Psr\Log\InvalidArgumentException;
-use RadnoK\PayUBundle\DBAL\Types\PlanType;
+use RadnoK\PayUBundle\DBAL\Types\PlanTypeType;
 
 class PaymentFactory implements PaymentFactoryInterface
 {
@@ -22,10 +22,12 @@ class PaymentFactory implements PaymentFactoryInterface
     public function makePayment($type)
     {
         switch($type) {
-            case PlanType::SINGLE:
+            case PlanTypeType::SINGLE:
                 return new SinglePayment();
-            case PlanType::RECURRING:
+            case PlanTypeType::RECURRING:
                 return new RecurringPayment();
+            case PlanTypeType::CARD:
+                return new CardPayment();
             default:
                 throw new InvalidArgumentException('Invalid Payment type');
         }

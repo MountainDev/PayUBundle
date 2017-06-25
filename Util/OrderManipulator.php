@@ -6,6 +6,7 @@
 
 namespace RadnoK\PayUBundle\Util;
 
+use RadnoK\PayUBundle\DBAL\Types\OrderStatusType;
 use RadnoK\PayUBundle\Manager\OrderManagerInterface;
 use RadnoK\PayUBundle\Model\OrderInterface;
 use RadnoK\PayUBundle\Model\PlanInterface;
@@ -33,17 +34,13 @@ class OrderManipulator
         $this->dispatcher = $eventDispatcher;
     }
 
-    public function create(SubscriptionInterface $subscription)
+    public function create(SubscriberInterface $subscriber, float $amount, string $description = '')
     {
-        /** @var PlanInterface $plan */
-        $plan = $subscription->getPlan();
-
-        $description = $plan->getName();
-
         $order = $this->orderManager->create();
-        $order->setSubscriber($subscription->getSubscriber());
-        $order->setAmount($plan->getPrice());
-        $order->setDescription(null === $description ? uniqid('order_') : $description);
+        $order->setSubscriber($subscriber);
+        $order->setAmount($amount);
+        $order->setStatus(OrderStatusType::PENDING);
+        $order->setDescription(empty($description) ? uniqid('order_') : $description);
 
         $this->orderManager->update($order);
 

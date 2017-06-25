@@ -11,21 +11,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class RecurringPayment
 {
-    /**
-     * Get all order data
-     *
-     * @param OrderInterface $order
-     * @param SubscriptionInterface $subscription
-     * @param string $token
-     * @return array
-     */
-    public function getOrderData(OrderInterface $order, $token, $notify): array
+    public function getOrderData(OrderInterface $order, string $token, string $notifyUrl): array
     {
         /** @var SubscriberInterface $subscriber */
         $subscriber = $order->getSubscriber();
 
         return [
-            'notifyUrl'     => $notify,
+            'notifyUrl'     => $notifyUrl,
             'customerIp'    => '127.0.0.1',
             'merchantPosId' => OpenPayU_Configuration::getOauthClientId(),
             'description'   => $order->getDescription(),

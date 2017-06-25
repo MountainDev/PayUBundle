@@ -14,11 +14,6 @@ abstract class Subscription implements SubscriptionInterface
     protected $id;
 
     /**
-     * @ORM\Column(name="charges_failed", type="integer")
-     */
-    protected $chargesFailed = 0;
-
-    /**
      * @ORM\Column(name="token", type="string", length=255, nullable=true)
      */
     protected $token = null;
@@ -34,6 +29,11 @@ abstract class Subscription implements SubscriptionInterface
     protected $lastPaymentSuccess = null;
 
     /**
+     * @ORM\Column(name="charges_failed", type="integer")
+     */
+    protected $chargesFailed = 0;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created_at", type="datetime")
      */
@@ -45,7 +45,7 @@ abstract class Subscription implements SubscriptionInterface
     protected $plan;
 
     /**
-     * @ORM\ManyToOne(targetEntity="RadnoK\PayUBundle\Model\SubscriberInterface", inversedBy="subscriptions")
+     * @ORM\OneToOne(targetEntity="RadnoK\PayUBundle\Model\SubscriberInterface", inversedBy="subscription")
      * @ORM\JoinColumn(name="subscriber_id", referencedColumnName="id")
      */
     protected $subscriber;
@@ -56,18 +56,6 @@ abstract class Subscription implements SubscriptionInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    public function getChargesFailed()
-    {
-        return $this->chargesFailed;
-    }
-
-    public function setChargesFailed($chargesFailed)
-    {
-        $this->chargesFailed = $chargesFailed;
-
-        return $this;
     }
 
     public function getToken()
@@ -102,6 +90,25 @@ abstract class Subscription implements SubscriptionInterface
     public function setLastPaymentSuccess(\DateTime $lastPaymentSuccess)
     {
         $this->lastPaymentSuccess = $lastPaymentSuccess;
+
+        return $this;
+    }
+
+    public function getChargesFailed()
+    {
+        return $this->chargesFailed;
+    }
+
+    public function addChargesFailed()
+    {
+        $this->chargesFailed++;
+
+        return $this;
+    }
+
+    public function setChargesFailed(int $chargesFailed)
+    {
+        $this->chargesFailed = $chargesFailed;
 
         return $this;
     }

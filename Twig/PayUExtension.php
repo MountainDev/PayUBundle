@@ -14,11 +14,12 @@ class PayUExtension extends \Twig_Extension
         ];
     }
 
-    public function widget(\Twig_Environment $environment, $params, $sig)
+    public function widget(\Twig_Environment $environment, array $params, string $sig, string $env)
     {
         return $environment->render(
             '@RadnoKPayU/payment/recurring/widget.html.twig',
             [
+                'env'       => $env,
                 'params'    => $params,
                 'sig'       => $sig
             ]

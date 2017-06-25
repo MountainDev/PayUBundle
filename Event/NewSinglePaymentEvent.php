@@ -17,10 +17,16 @@ class NewSinglePaymentEvent extends NewPaymentEvent
      */
     private $subscriber;
 
-    public function __construct(PlanInterface $plan, SubscriberInterface $subscriber)
+    /**
+     * @var string
+     */
+    private $continueUrl;
+
+    public function __construct(PlanInterface $plan, SubscriberInterface $subscriber, string $continueUrl)
     {
         $this->plan = $plan;
         $this->subscriber = $subscriber;
+        $this->continueUrl = $continueUrl;
     }
 
     public function getPlan()
@@ -31,5 +37,10 @@ class NewSinglePaymentEvent extends NewPaymentEvent
     public function getSubscriber()
     {
         return $this->subscriber;
+    }
+
+    public function getContinueUrl(): string
+    {
+        return $this->continueUrl;
     }
 }

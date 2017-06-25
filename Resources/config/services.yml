@@ -6,8 +6,8 @@ services:
             - "%payu_client_id%"
             - "%payu_client_secret%"
 
-    radnok_payu.listener:
-        class: RadnoK\PayUBundle\EventListener\PaymentListener
+    radnok_payu.new_payment.listener:
+        class: RadnoK\PayUBundle\EventListener\NewPaymentListener
         arguments:
             - "@radnok_payu.util.subscription_manipulator"
             - "@radnok_payu.util.order_manipulator"
@@ -15,6 +15,11 @@ services:
             - "@router"
         tags:
             - { name: kernel.event_subscriber }
+
+    radnok_payu.payment_status.listener:
+        class: RadnoK\PayUBundle\EventListener\PaymentStatusListener
+        arguments:
+            - "@radnok_payu.subscription_manager"
 
     radnok_payu.plan.form.type:
         class: RadnoK\PayUBundle\Form\PlanType
@@ -45,3 +50,9 @@ services:
         arguments:
             - "@radnok_payu.subscription_manager"
             - "@event_dispatcher"
+
+    radnok_payu.twig.widget:
+        class: RadnoK\PayUBundle\Twig\PayUExtension
+        public: false
+        tags:
+            - { name: twig.extension }

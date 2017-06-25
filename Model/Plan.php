@@ -35,23 +35,18 @@ abstract class Plan implements PlanInterface
     protected $description;
 
     /**
-     * @ORM\Column(name="price_description", type="text", nullable=true)
-     */
-    protected $priceDescription = null;
-
-    /**
      * @ORM\Column(name="active", type="boolean")
      */
     protected $active = true;
 
     /**
-     * @ORM\Column(name="type", type="PlanType", nullable=false)
-     * @DoctrineAssert\Enum(entity="RadnoK\PayUBundle\DBAL\Types\PlanType")
+     * @ORM\Column(name="type", type="PlanTypeType", nullable=false)
+     * @DoctrineAssert\Enum(entity="RadnoK\PayUBundle\DBAL\Types\PlanTypeType")
      */
     protected $type;
 
     /**
-     * @ORM\OneToMany(targetEntity="RadnoK\PayUBundle\Model\SubscriptionInterface", mappedBy="plan")
+     * @ORM\OneToMany(targetEntity="RadnoK\PayUBundle\Model\SubscriptionInterface", mappedBy="plan",cascade={"remove"}, orphanRemoval=true)
      */
     protected $subscriptions;
 
@@ -65,7 +60,7 @@ abstract class Plan implements PlanInterface
         return $this->id;
     }
 
-    public function getCode(): string
+    public function getCode(): ?string
     {
         return $this->code;
     }
@@ -77,7 +72,7 @@ abstract class Plan implements PlanInterface
         return $this;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -89,7 +84,7 @@ abstract class Plan implements PlanInterface
         return $this;
     }
 
-    public function getPrice(): float
+    public function getPrice(): ?float
     {
         return $this->price;
     }
@@ -101,7 +96,7 @@ abstract class Plan implements PlanInterface
         return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -109,18 +104,6 @@ abstract class Plan implements PlanInterface
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getPriceDescription(): ?string
-    {
-        return $this->priceDescription;
-    }
-
-    public function setPriceDescription(string $priceDescription): self
-    {
-        $this->priceDescription = $priceDescription;
 
         return $this;
     }
@@ -137,7 +120,7 @@ abstract class Plan implements PlanInterface
         return $this;
     }
 
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }

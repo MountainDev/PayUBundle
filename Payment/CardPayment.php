@@ -10,34 +10,13 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 final class CardPayment
 {
-    /**
-     * @param SubscriptionInterface $subscription
-     * @return OrderInterface
-     */
-    private function createOrderForSubscription(SubscriptionInterface $subscription)
-    {
-        $order = new Order();
-        $order->setSubscriber($subscription->getSubscriber());
-        $order->setAmount($subscription->getAmount());
-
-        $this->entityManager->persist($order);
-        $this->entityManager->flush();
-
-        return $order;
-    }
-
-    /**
-     * @param OrderInterface $order
-     * @param $token
-     * @return array
-     */
-    private function buildRequestData(OrderInterface $order, $token)
+    public function getOrderData(OrderInterface $order, string $token, string $notifyUrl): array
     {
         /** @var SubscriberInterface $subscriber */
         $subscriber = $order->getSubscriber();
 
         return [
-            'notifyUrl'     => $this->router->generate('radnok_payu_payments_notify'),
+            'notifyUrl'     => $notifyUrl,
             'recurring'     => 'STANDARD',
             'customerIp'    => '127.0.0.1',
             'merchantPosId' => OpenPayU_Configuration::getOauthClientId(),
