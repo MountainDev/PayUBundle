@@ -1,5 +1,6 @@
 {
     "name": "radnok/payubundle",
+    "type": "symfony-bundle",
     "description": "PayU system integration for Symfony 3",
     "type": "library",
     "require": {
