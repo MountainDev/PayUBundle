@@ -11,7 +11,7 @@
         "psr-4": {
             "RadnoK\\PayUBundle\\": ""
         },
-    }
+    },
     "license": "MIT",
     "authors": [
         {
