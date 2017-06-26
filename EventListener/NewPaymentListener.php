@@ -78,10 +78,8 @@ class NewPaymentListener implements EventSubscriberInterface
         /** @var SinglePayment $singlePayment */
         $singlePayment = $this->paymentFactory->makePayment(PlanTypeType::SINGLE);
 
-        $continueUrl = 'http://e64fb41e.ngrok.io'.$this->router->generate($event->getContinueUrl());
-        $notifyUrl = 'http://e64fb41e.ngrok.io/payment/notify';
-//        $continueUrl = $this->router->generate($event->getContinueUrl(), [], UrlGeneratorInterface::ABSOLUTE_URL);
-//        $notifyUrl = $this->router->generate('radnok_payu_payments_notify', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $continueUrl = $this->router->generate($event->getContinueUrl(), [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $notifyUrl = $this->router->generate('radnok_payu_payments_notify', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $request = OpenPayU_Order::create(
             $singlePayment->getOrderData($order, $continueUrl, $notifyUrl)
