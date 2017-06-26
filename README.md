@@ -1,12 +1,14 @@
-##Unstable, in development!
+# PayUBundle for Symfony 3
+---
 
-##TODO:
+# !!! Bundle is still under heavy development. Plese, do not use it... anywhere !!!
 
-- General cleanup after many changes... Should have start this project from scratch
+## TODO:
+---
 - Tests
 - Solve doctrine resolve_target_entities
-- Managers for entities
 - Move repositories to managers
-- Make proper composer.json
 - Finish Command for card charges
+- Make sure recurring payments work
+- More configuration (disabling single/recurring payments)
  
