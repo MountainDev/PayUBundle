@@ -7,6 +7,11 @@
         "openpayu/openpayu": "^2.2",
         "gedmo/doctrine-extensions": "^2.4"
     },
+    "autoload": {
+        "psr-4": {
+            "RadnoK\\PayUBundle\\": ""
+        },
+    }
     "license": "MIT",
     "authors": [
         {
