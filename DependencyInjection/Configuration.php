@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('radnok_payu');
+        $rootNode = $treeBuilder->root("radnok_payu");
 
         $rootNode
             ->children()
@@ -27,6 +27,18 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('environment')->isRequired()->cannotBeEmpty()->end()
                         ->scalarNode('client_id')->isRequired()->cannotBeEmpty()->end()
                         ->scalarNode('client_secret')->isRequired()->cannotBeEmpty()->end()
+                        ->scalarNode('secret_md5')->isRequired()->cannotBeEmpty()->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+
+        $rootNode
+            ->children()
+                ->arrayNode('payments')
+                    ->children()
+                        ->scalarNode('single')->defaultTrue()->end()
+                        ->scalarNode('recurring')->defaultTrue()->end()
                     ->end()
                 ->end()
             ->end()

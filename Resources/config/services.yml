@@ -1,3 +1,8 @@
+imports:
+    - { resource: util.yml }
+    - { resource: form.yml }
+    - { resource: twig.yml }
+
 services:
     radnok_payu.payment_factory:
         class: RadnoK\PayUBundle\Payment\PaymentFactory
@@ -19,40 +24,19 @@ services:
     radnok_payu.payment_status.listener:
         class: RadnoK\PayUBundle\EventListener\PaymentStatusListener
         arguments:
-            - "@radnok_payu.subscription_manager"
-
-    radnok_payu.plan.form.type:
-        class: RadnoK\PayUBundle\Form\PlanType
+            - "@radnok_payu.util.subscription_manipulator"
         tags:
-            - { name: form.type }
-        arguments: ["%radnok_model_plan_class%"]
+            - { name: kernel.event_subscriber }
 
     radnok_payu.order_manager:
         class: RadnoK\PayUBundle\Doctrine\OrderManager
         arguments:
             - "@doctrine.orm.entity_manager"
-            - "%radnok_model_order_class%"
+            - "%radnok_payu_model_order_class%"
 
     radnok_payu.subscription_manager:
         class: RadnoK\PayUBundle\Doctrine\SubscriptionManager
         arguments:
             - "@doctrine.orm.entity_manager"
-            - "%radnok_model_subscription_class%"
+            - "%radnok_payu_model_subscription_class%"
 
-    radnok_payu.util.order_manipulator:
-        class: RadnoK\PayUBundle\Util\OrderManipulator
-        arguments:
-            - "@radnok_payu.order_manager"
-            - "@event_dispatcher"
-
-    radnok_payu.util.subscription_manipulator:
-        class: RadnoK\PayUBundle\Util\SubscriptionManipulator
-        arguments:
-            - "@radnok_payu.subscription_manager"
-            - "@event_dispatcher"
-
-    radnok_payu.twig.widget:
-        class: RadnoK\PayUBundle\Twig\PayUExtension
-        public: false
-        tags:
-            - { name: twig.extension }

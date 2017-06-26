@@ -7,10 +7,10 @@
 namespace RadnoK\PayUBundle\Doctrine;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use RadnoK\PayUBundle\Manager\SubscriptionManagerInterface;
+use RadnoK\PayUBundle\Manager\SubscriptionManager as BaseSubscriptionManager;
 use RadnoK\PayUBundle\Model\SubscriptionInterface;
 
-class SubscriptionManager implements SubscriptionManagerInterface
+class SubscriptionManager extends BaseSubscriptionManager
 {
     /**
      * @var ObjectManager
@@ -43,7 +43,7 @@ class SubscriptionManager implements SubscriptionManagerInterface
         return new $this->class;
     }
 
-    public function update(SubscriptionInterface $subscription)
+    public function update(SubscriptionInterface $subscription): void
     {
         $this->objectManager->persist($subscription);
         $this->objectManager->flush();

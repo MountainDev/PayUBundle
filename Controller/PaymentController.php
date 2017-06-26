@@ -27,7 +27,6 @@ class PaymentController extends Controller
 	{
 	    dump($request);die;
 
-	    
 
         return $this->redirectToRoute('radnok_payu_payment_error');
 	}
@@ -72,6 +71,8 @@ class PaymentController extends Controller
             case OrderStatusType::CANCELED:
                 $dispatcher->dispatch(RadnoKPayUEvents::PAYMENT_CANCELED, $event);
                 break;
+            default:
+                return new JsonResponse(['status' => 'Status cannot be handled']);
         }
 
         $orderManager->update($paymentOrder);

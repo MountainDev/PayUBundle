@@ -22,17 +22,21 @@ class RadnoKPayUExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $plan = $config['doctrine']['plan_class'];
-        $container->setParameter('radnok_model_plan_class', $plan);
+        /** Payments */
+        $container->setParameter('radnok_payu_environment', $config['payu_account']['environment']);
+        $container->setParameter('radnok_payu_client_id', $config['payu_account']['client_id']);
+        $container->setParameter('radnok_payu_client_secret', $config['payu_account']['client_secret']);
+        $container->setParameter('radnok_payu_secret_md5', $config['payu_account']['secret_md5']);
 
-        $subscription = $config['doctrine']['subscription_class'];
-        $container->setParameter('radnok_model_subscription_class', $subscription);
+        /** Payments */
+        $container->setParameter('radnok_payu_payments_single', $config['payments']['single']);
+        $container->setParameter('radnok_payu_payments_recurring', $config['payments']['recurring']);
 
-        $subscriber = $config['doctrine']['subscriber_class'];
-        $container->setParameter('radnok_model_subscriber_class', $subscriber);
-
-        $order = $config['doctrine']['order_class'];
-        $container->setParameter('radnok_model_order_class', $order);
+        /** Doctrine */
+        $container->setParameter('radnok_payu_model_plan_class', $config['doctrine']['plan_class']);
+        $container->setParameter('radnok_payu_model_subscription_class', $config['doctrine']['subscription_class']);
+        $container->setParameter('radnok_payu_model_subscriber_class', $config['doctrine']['subscriber_class']);
+        $container->setParameter('radnok_payu_model_order_class', $config['doctrine']['order_class']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');

@@ -1,0 +1,12 @@
+services:
+    radnok_payu.util.order_manipulator:
+        class: RadnoK\PayUBundle\Util\OrderManipulator
+        arguments:
+            - "@radnok_payu.order_manager"
+            - "@event_dispatcher"
+
+    radnok_payu.util.subscription_manipulator:
+        class: RadnoK\PayUBundle\Util\SubscriptionManipulator
+        arguments:
+            - "@radnok_payu.subscription_manager"
+            - "@event_dispatcher"

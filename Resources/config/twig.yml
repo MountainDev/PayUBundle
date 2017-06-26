@@ -1,0 +1,6 @@
+services:
+    radnok_payu.twig.widget:
+        class: RadnoK\PayUBundle\Twig\PayUExtension
+        public: false
+        tags:
+            - { name: twig.extension }

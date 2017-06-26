@@ -7,22 +7,22 @@
 namespace RadnoK\PayUBundle\EventListener;
 
 use RadnoK\PayUBundle\Event\ChangePaymentStatusEvent;
-use RadnoK\PayUBundle\Manager\SubscriptionManagerInterface;
 use RadnoK\PayUBundle\Model\SubscriberInterface;
 use RadnoK\PayUBundle\Model\SubscriptionInterface;
 use RadnoK\PayUBundle\RadnoKPayUEvents;
+use RadnoK\PayUBundle\Util\SubscriptionManipulator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaymentStatusListener implements EventSubscriberInterface
 {
     /**
-     * @var SubscriptionManagerInterface
+     * @var SubscriptionManipulator
      */
     private $subscriptionManipulator;
 
-    public function __construct(SubscriptionManagerInterface $subscriptionManager)
+    public function __construct(SubscriptionManipulator $subscriptionManager)
     {
-        $this->subscriptionManager = $subscriptionManager;
+        $this->subscriptionManipulator = $subscriptionManager;
     }
 
     public static function getSubscribedEvents()
@@ -49,7 +49,7 @@ class PaymentStatusListener implements EventSubscriberInterface
             $subscription->setLastPaymentSuccess(new \DateTime());
             $subscription->setChargesFailed(0);
 
-            $this->subscriptionManager->update($subscription);
+            $this->subscriptionManipulator->update($subscription);
         }
     }
 
@@ -62,7 +62,7 @@ class PaymentStatusListener implements EventSubscriberInterface
             /** @var SubscriptionInterface $subscription */
             $subscription->addChargesFailed();
 
-            $this->subscriptionManager->update($subscription);
+            $this->subscriptionManipulator->update($subscription);
         }
     }
 }

@@ -1,0 +1,7 @@
+services:
+    radnok_payu.plan.form.type:
+        class: RadnoK\PayUBundle\Form\PlanType
+        arguments:
+            - "%radnok_payu_model_plan_class%"
+        tags:
+            - { name: form.type }
