@@ -19,18 +19,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class PaymentController extends Controller
 {
-	/**
-	 * @Route("/process", name="radnok_payu_payment_process")
-	 * @Method({"POST"})
-	 */
-	public function processAction(Request $request)
-	{
-	    dump($request);die;
-
-
-        return $this->redirectToRoute('radnok_payu_payment_error');
-	}
-
     /**
      * @Route("/notify", name="radnok_payu_payments_notify")
      * @Method({"POST"})

@@ -13,7 +13,18 @@
         currency-code="{{ params['currency-code'] }}"
         customer-language="{{ params['customer-language'] }}"
         store-card="{{ params['store-card'] }}"
+        success-callback="radnok_payu_success_payment"
         recurring-payment="true"
         customer-email="{{ params['customer-email'] }}"
         sig="{{ sig }}">
+</script>
+
+<script type="text/javascript">
+    function radnok_payu_success_payment($data) {
+        console.log("callback");
+        console.log($data);
+
+        $('[name="token"]').val($data.value);
+        $('[name="token_type"]').val($data.tokenType);
+    }
 </script>

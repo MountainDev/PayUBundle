@@ -4,6 +4,7 @@ namespace RadnoK\PayUBundle\EventListener;
 
 use RadnoK\PayUBundle\DBAL\Types\PlanTypeType;
 use RadnoK\PayUBundle\Event\ChargeCardsEvent;
+use RadnoK\PayUBundle\Event\NewPaymentFailedEvent;
 use RadnoK\PayUBundle\Event\NewRecurringPaymentEvent;
 use RadnoK\PayUBundle\Event\NewSinglePaymentEvent;
 use RadnoK\PayUBundle\Model\OrderInterface;
@@ -16,10 +17,11 @@ use RadnoK\PayUBundle\Payment\SinglePayment;
 use RadnoK\PayUBundle\RadnoKPayUEvents;
 use RadnoK\PayUBundle\Util\OrderManipulator;
 use RadnoK\PayUBundle\Util\SubscriptionManipulator;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use OpenPayU_Order;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class NewPaymentListener implements EventSubscriberInterface
 {
@@ -39,7 +41,12 @@ class NewPaymentListener implements EventSubscriberInterface
     private $paymentFactory;
 
     /**
-     * @var Router
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
+     * @var RouterInterface
      */
     private $router;
 
@@ -47,11 +54,13 @@ class NewPaymentListener implements EventSubscriberInterface
         SubscriptionManipulator $subscriptionManipulator,
         OrderManipulator $orderManipulator,
         PaymentFactoryInterface $paymentFactory,
-        Router $router
+        EventDispatcherInterface $eventDispatcher,
+        RouterInterface $router
     ) {
         $this->subscriptionManipulator = $subscriptionManipulator;
         $this->orderManipulator = $orderManipulator;
         $this->paymentFactory = $paymentFactory;
+        $this->dispatcher = $eventDispatcher;
         $this->router = $router;
     }
 
@@ -68,29 +77,33 @@ class NewPaymentListener implements EventSubscriberInterface
      */
     public function onSinglePayment(NewSinglePaymentEvent $event)
     {
-        /** @var OrderInterface $order */
-        $order = $this->orderManipulator->create(
-            $event->getSubscriber(),
-            $event->getPlan()->getPrice(),
-            $event->getPlan()->getName()
-        );
-
         /** @var SinglePayment $singlePayment */
         $singlePayment = $this->paymentFactory->makePayment(PlanTypeType::SINGLE);
 
         $continueUrl = $this->router->generate($event->getContinueUrl(), [], UrlGeneratorInterface::ABSOLUTE_URL);
         $notifyUrl = $this->router->generate('radnok_payu_payments_notify', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $request = OpenPayU_Order::create(
-            $singlePayment->getOrderData($order, $continueUrl, $notifyUrl)
-        );
+        try {
+            /** @var OrderInterface $order */
+            $order = $this->orderManipulator->create(
+                $event->getSubscriber(),
+                $event->getPlan()->getPrice(),
+                $event->getPlan()->getName()
+            );
 
-        $response = $request->getResponse();
+            $request = OpenPayU_Order::create(
+                $singlePayment->getOrderData($order, $continueUrl, $notifyUrl)
+            );
 
-        $order->setOrderId($response->orderId);
+            $response = $request->getResponse();
 
-        $this->orderManipulator->update($order);
-        $event->setResponse($response->redirectUri);
+            $order->setOrderId($response->orderId);
+            $this->orderManipulator->update($order);
+
+            $event->setResponse($response->redirectUri);
+        } catch (\Exception $exception) {
+            $this->dispatcher->dispatch(RadnoKPayUEvents::PAYMENT_FAILED, new NewPaymentFailedEvent());
+        }
     }
 
     /**
@@ -101,31 +114,32 @@ class NewPaymentListener implements EventSubscriberInterface
         /** @var SubscriberInterface $subscriber */
         $subscriber = $event->getSubscriber();
 
-        /** @var SubscriptionInterface $subscription */
-        $subscription = $this->subscriptionManipulator->create($event->getPlan(), $subscriber);
-
-        /** @var OrderInterface $order */
-        $order = $this->orderManipulator->create(
-            $subscriber,
-            $subscription->getPlan()->getPrice(),
-            $subscription->getPlan()->getName()
-        );
-
         /** @var RecurringPayment $recurringPayment */
         $recurringPayment = $this->paymentFactory->makePayment(PlanTypeType::RECURRING);
 
-        $request = OpenPayU_Order::create(
-            $recurringPayment->getOrderData($order, $event->getToken(), $event->getTokenType())
-        );
+        try {
+            /** @var SubscriptionInterface $subscription */
+            $subscription = $this->subscriptionManipulator->create($event->getPlan(), $subscriber);
 
-        $response = $request->getResponse();
+            /** @var OrderInterface $order */
+            $order = $this->orderManipulator->create(
+                $subscriber,
+                $subscription->getPlan()->getPrice(),
+                $subscription->getPlan()->getName()
+            );
 
-        $this->makePaymentAttempt($subscription, $order, $response);
+            $request = OpenPayU_Order::create(
+                $recurringPayment->getOrderData($order, $event->getToken(), $event->getTokenType())
+            );
 
-        $subscriber->setSubscription($subscription);
-        $this->subscriberManipulator->update($subscriber);
+            $response = $request->getResponse();
 
-        $event->setResponse($response->redirectUri);
+            $this->makePaymentAttempt($subscription, $order, $response);
+            $event->setResponse($response->redirectUri);
+        } catch (\Exception $exception) {
+            dump($exception->getMessage());
+            $this->dispatcher->dispatch(RadnoKPayUEvents::PAYMENT_FAILED, new NewPaymentFailedEvent());
+        }
     }
 
     public function onCardCharge(ChargeCardsEvent $event)
@@ -153,16 +167,11 @@ class NewPaymentListener implements EventSubscriberInterface
         $event->setResponse($response);
     }
 
-    /**
-     * @param SubscriptionInterface $subscription
-     * @param OrderInterface $order
-     * @param $response
-     */
     private function makePaymentAttempt(
         SubscriptionInterface $subscription,
         OrderInterface $order,
         $response
-    ) {
+    ): void {
         $subscription->setToken($response->payMethods->payMethod->value);
         $subscription->setLastPaymentAttempt(new \DateTime());
         $this->subscriptionManipulator->update($subscription);
@@ -171,10 +180,6 @@ class NewPaymentListener implements EventSubscriberInterface
         $this->orderManipulator->update($order);
     }
 
-    /**
-     * @param SubscriptionInterface $subscription
-     * @return OrderInterface
-     */
     private function createOrderForSubscription(SubscriptionInterface $subscription): OrderInterface
     {
         /** @var OrderInterface $order */

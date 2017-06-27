@@ -17,6 +17,7 @@ services:
             - "@radnok_payu.util.subscription_manipulator"
             - "@radnok_payu.util.order_manipulator"
             - "@radnok_payu.payment_factory"
+            - "@event_dispatcher"
             - "@router"
         tags:
             - { name: kernel.event_subscriber }

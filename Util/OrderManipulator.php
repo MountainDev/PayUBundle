@@ -34,13 +34,17 @@ class OrderManipulator
         $this->dispatcher = $eventDispatcher;
     }
 
-    public function create(SubscriberInterface $subscriber, float $amount, string $description = '')
+    public function create(SubscriberInterface $subscriber, float $amount, string $description = '', $subscription = null)
     {
         $order = $this->orderManager->create();
         $order->setSubscriber($subscriber);
         $order->setAmount($amount);
         $order->setStatus(OrderStatusType::PENDING);
         $order->setDescription(empty($description) ? uniqid('order_') : $description);
+
+        if ($subscription instanceof SubscriptionInterface) {
+            $order->setFromSubscription(true);
+        }
 
         $this->orderManager->update($order);
 

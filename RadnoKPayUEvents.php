@@ -15,4 +15,6 @@ final class RadnoKPayUEvents
     const PAYMENT_PENDING = 'radnok.payu.payment.status.pending';
 
     const PAYMENT_CANCELED = 'radnok.payu.payment.status.canceled';
+
+    const PAYMENT_FAILED = 'radnok.payu.payment.status.failed';
 }
