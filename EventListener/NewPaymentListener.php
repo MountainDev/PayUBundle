@@ -101,6 +101,7 @@ class NewPaymentListener implements EventSubscriberInterface
             $this->orderManipulator->update($order);
 
             $event->setResponse($response->redirectUri);
+            $event->setOrder($order);
         } catch (\Exception $exception) {
             $this->dispatcher->dispatch(RadnoKPayUEvents::PAYMENT_FAILED, new NewPaymentFailedEvent());
         }
@@ -136,6 +137,7 @@ class NewPaymentListener implements EventSubscriberInterface
 
             $this->makePaymentAttempt($subscription, $order, $response);
             $event->setResponse($response->redirectUri);
+            $event->setOrder($order);
         } catch (\Exception $exception) {
             dump($exception->getMessage());
             $this->dispatcher->dispatch(RadnoKPayUEvents::PAYMENT_FAILED, new NewPaymentFailedEvent());

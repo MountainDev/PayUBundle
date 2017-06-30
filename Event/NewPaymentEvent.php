@@ -2,11 +2,19 @@
 
 namespace RadnoK\PayUBundle\Event;
 
+use RadnoK\PayUBundle\Model\OrderInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 abstract class NewPaymentEvent extends Event
 {
     private $response;
+
+    private $order;
+
+    public function getResponse()
+    {
+        return $this->response;
+    }
 
     public function setResponse($response)
     {
@@ -15,8 +23,15 @@ abstract class NewPaymentEvent extends Event
         return $this;
     }
 
-    public function getResponse()
+    public function getOrder(): ?OrderInterface
     {
-        return $this->response;
+        return $this->order;
+    }
+
+    public function setOrder(OrderInterface $order)
+    {
+        $this->order = $order;
+
+        return $this;
     }
 }
